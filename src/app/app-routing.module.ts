@@ -7,7 +7,16 @@ const routes: Routes = [
   {
     path: '',
     component: MainContentComponent,
-    children: [],
+    data: { pageTitle: 'Home' },
+    children: [
+      {
+        path: 'gesture-detection',
+        loadChildren: () =>
+          import('./modules/gesture-detection/gesture-detection.module').then(
+            (m) => m.GestureDetectionModule
+          ),
+      },
+    ],
   },
 ];
 

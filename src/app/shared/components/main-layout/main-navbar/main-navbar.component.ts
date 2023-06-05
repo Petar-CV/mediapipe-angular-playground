@@ -23,10 +23,15 @@ export class MainNavbarComponent implements OnInit {
   private loadNavbar(): void {
     this.navbarItems = [
       {
-        label: 'Početna',
+        label: 'Home',
         icon: 'pi pi-fw pi-home',
         routerLink: ['/'],
         routerLinkActiveOptions: { exact: true },
+      },
+      {
+        label: 'Gesture detection',
+        icon: 'pi pi-fw pi-play',
+        routerLink: ['/gesture-detection'],
       },
     ];
 
