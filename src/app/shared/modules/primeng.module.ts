@@ -1,11 +1,11 @@
 import { NgModule } from '@angular/core';
 import { ButtonModule } from 'primeng/button';
+import { CheckboxModule } from 'primeng/checkbox';
 import { MenubarModule } from 'primeng/menubar';
 
-const primeNGModules = [ButtonModule, MenubarModule];
+const primeNGModules = [ButtonModule, MenubarModule, CheckboxModule];
 
 @NgModule({
-  imports: [...primeNGModules],
   exports: [...primeNGModules],
 })
 export class PrimeNGModule {}

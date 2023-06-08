@@ -24,6 +24,7 @@ export class GestureDetectionHomeComponent implements AfterViewInit {
   @ViewChild('outputCanvas')
   public outputCanvas?: ElementRef<HTMLCanvasElement>;
   public gestureDetected = '';
+  public showLandmarks = false;
 
   private gestureRecognizer?: GestureRecognizer;
   private lastVideoTime = -1;
@@ -80,7 +81,7 @@ export class GestureDetectionHomeComponent implements AfterViewInit {
 
     canvasCtx.save();
     canvasCtx.clearRect(0, 0, canvas.width, canvas.height);
-    if (this.results?.landmarks) {
+    if (this.results?.landmarks && this.showLandmarks) {
       for (const landmarks of this.results.landmarks) {
         drawConnectors(
           canvasCtx,
