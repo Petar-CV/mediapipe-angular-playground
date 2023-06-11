@@ -16,6 +16,11 @@ const routes: Routes = [
             (m) => m.GestureDetectionModule
           ),
       },
+      {
+        path: '',
+        redirectTo: 'gesture-detection',
+        pathMatch: 'full',
+      },
     ],
   },
 ];
