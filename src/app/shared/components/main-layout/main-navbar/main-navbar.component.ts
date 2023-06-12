@@ -31,7 +31,12 @@ export class MainNavbarComponent implements OnInit {
       {
         label: 'Gesture detection',
         icon: 'pi pi-fw pi-play',
-        routerLink: ['/gesture-detection'],
+        routerLink: ['/gesture-detection/home'],
+      },
+      {
+        label: 'Gesture detection implementation',
+        icon: 'pi pi-fw pi-play',
+        routerLink: ['/gesture-detection/implementation'],
       },
     ];
 

@@ -21,6 +21,11 @@ const routes: Routes = [
         redirectTo: 'gesture-detection',
         pathMatch: 'full',
       },
+      {
+        path: '**',
+        redirectTo: 'gesture-detection',
+        pathMatch: 'full',
+      },
     ],
   },
 ];
