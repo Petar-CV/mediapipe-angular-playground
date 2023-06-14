@@ -1,0 +1,13 @@
+<div style="position: relative;">
+  <video #videoElement id="videoElement" style="position: abso" autoplay playsinline></video>
+  <canvas #outputCanvas class="output_canvas" id="output_canvas" style="position: absolute; left: 0px; top: 0px;"></canvas>
+</div>
+
+<div class="p-2 space-y-2">
+  <span>{{ gestureDetected }}</span>
+
+  <div class="flex items-center space-x-2">
+    <p-checkbox [(ngModel)]="showLandmarks" [binary]="true" inputId="showLandmarks"></p-checkbox>
+    <label for="showLandmarks">Show hand landmarks?</label>
+  </div>
+</div>

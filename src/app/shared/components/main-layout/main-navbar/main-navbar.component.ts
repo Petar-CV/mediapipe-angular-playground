@@ -38,6 +38,11 @@ export class MainNavbarComponent implements OnInit {
         icon: 'pi pi-fw pi-play',
         routerLink: ['/gesture-detection/implementation'],
       },
+      {
+        label: 'Gesture detection custom',
+        icon: 'pi pi-fw pi-play',
+        routerLink: ['/gesture-detection/custom'],
+      },
     ];
 
     this.cdr.markForCheck();

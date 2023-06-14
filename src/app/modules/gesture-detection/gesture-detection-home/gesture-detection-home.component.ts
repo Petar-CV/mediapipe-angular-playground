@@ -47,8 +47,6 @@ export class GestureDetectionHomeComponent implements AfterViewInit {
           videoElement.addEventListener('loadeddata', () =>
             this.predictWebcam()
           );
-          const bla = GestureRecognizer.HAND_CONNECTIONS;
-          bla;
         })
         .catch((error) => {
           console.error(error);
