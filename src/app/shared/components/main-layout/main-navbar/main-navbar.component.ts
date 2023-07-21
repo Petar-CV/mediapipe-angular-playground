@@ -42,6 +42,13 @@ export class MainNavbarComponent implements OnInit {
         icon: 'pi pi-fw pi-play',
         routerLink: ['/media-pipe-implementations/stock-hand-detection'],
       },
+      {
+        label: 'Selfie segmentation and hand detection',
+        icon: 'pi pi-fw pi-play',
+        routerLink: [
+          '/media-pipe-implementations/selfie-segmentation-and-hand-detection',
+        ],
+      },
     ];
 
     this.cdr.markForCheck();
