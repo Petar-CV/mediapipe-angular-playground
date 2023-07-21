@@ -29,19 +29,24 @@ export class MainNavbarComponent implements OnInit {
         routerLinkActiveOptions: { exact: true },
       },
       {
-        label: 'Gesture detection',
+        label: 'Original hands',
         icon: 'pi pi-fw pi-play',
         routerLink: ['/gesture-detection/home'],
       },
       {
-        label: 'Gesture detection implementation',
+        label: 'Hands',
         icon: 'pi pi-fw pi-play',
         routerLink: ['/gesture-detection/implementation'],
       },
       {
-        label: 'Gesture detection custom',
+        label: 'Custom',
         icon: 'pi pi-fw pi-play',
         routerLink: ['/gesture-detection/custom'],
+      },
+      {
+        label: 'Segmentation',
+        icon: 'pi pi-fw pi-play',
+        routerLink: ['/gesture-detection/segmentation'],
       },
     ];
 

@@ -7,6 +7,7 @@ import { GestureDetectionCustomComponent } from './gesture-detection-custom/gest
 import { GestureDetectionHomeComponent } from './gesture-detection-home/gesture-detection-home.component';
 import { GestureDetectionImplementationComponent } from './gesture-detection-implementation/gesture-detection-implementation.component';
 import { GestureDetectionOutletComponent } from './gesture-detection-outlet.component';
+import { GestureDetectionSegmentationComponent } from './gesture-detection-segmentation/gesture-detection-segmentation.component';
 
 const routes: Routes = [
   {
@@ -29,6 +30,11 @@ const routes: Routes = [
         component: GestureDetectionCustomComponent,
       },
       {
+        path: 'segmentation',
+        data: { pageTitle: 'Gesture detection segmentation' },
+        component: GestureDetectionSegmentationComponent,
+      },
+      {
         path: '',
         redirectTo: 'home',
         pathMatch: 'full',
@@ -43,6 +49,7 @@ const routes: Routes = [
     GestureDetectionHomeComponent,
     GestureDetectionImplementationComponent,
     GestureDetectionCustomComponent,
+    GestureDetectionSegmentationComponent,
   ],
   imports: [SharedModule, RouterModule.forChild(routes)],
 })
