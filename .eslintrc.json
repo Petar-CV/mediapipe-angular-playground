@@ -50,6 +50,9 @@
               "caseInsensitive": true
             }
           }
+        ],
+        "prettier/prettier": [
+          "warn"
         ]
       }
     },
