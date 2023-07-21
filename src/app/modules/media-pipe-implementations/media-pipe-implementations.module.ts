@@ -7,6 +7,7 @@ import { CustomGesturesComponent } from './custom-gestures/custom-gestures.compo
 import { MediaPipeImplementationsOutletComponent } from './media-pipe-implementations-outlet.component';
 import { SelfieSegmentationComponent } from './selfie-segmentation/selfie-segmentation.component';
 import { StockGesturesComponent } from './stock-gestures/stock-gestures.component';
+import { StockHandDetectionComponent } from './stock-hand-detection/stock-hand-detection.component';
 
 const routes: Routes = [
   {
@@ -29,6 +30,11 @@ const routes: Routes = [
         component: SelfieSegmentationComponent,
       },
       {
+        path: 'stock-hand-detection',
+        data: { pageTitle: 'Stock hand detection' },
+        component: StockHandDetectionComponent,
+      },
+      {
         path: '',
         redirectTo: 'stock-gestures',
         pathMatch: 'full',
@@ -43,6 +49,7 @@ const routes: Routes = [
     StockGesturesComponent,
     CustomGesturesComponent,
     SelfieSegmentationComponent,
+    StockHandDetectionComponent,
   ],
   imports: [SharedModule, RouterModule.forChild(routes)],
 })
