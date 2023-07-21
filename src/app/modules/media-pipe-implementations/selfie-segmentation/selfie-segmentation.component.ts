@@ -38,13 +38,11 @@ const legendColors = [
 ];
 
 @Component({
-  selector: 'app-gesture-detection-segmentation',
-  templateUrl: './gesture-detection-segmentation.component.html',
+  selector: 'app-selfie-segmentation',
+  templateUrl: './selfie-segmentation.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class GestureDetectionSegmentationComponent
-  implements OnInit, AfterViewInit
-{
+export class SelfieSegmentationComponent implements OnInit, AfterViewInit {
   @ViewChild('webcamVideo')
   public webcamVideo!: ElementRef<HTMLVideoElement>;
 

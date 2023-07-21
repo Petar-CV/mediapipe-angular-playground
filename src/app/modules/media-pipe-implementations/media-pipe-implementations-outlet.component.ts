@@ -4,4 +4,4 @@ import { ChangeDetectionStrategy, Component } from '@angular/core';
   template: ` <router-outlet /> `,
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class GestureDetectionOutletComponent {}
+export class MediaPipeImplementationsOutletComponent {}

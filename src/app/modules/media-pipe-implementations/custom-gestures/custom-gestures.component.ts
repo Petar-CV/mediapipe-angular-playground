@@ -14,11 +14,11 @@ import {
 } from '@mediapipe/tasks-vision';
 
 @Component({
-  selector: 'app-gesture-detection-home',
-  templateUrl: './gesture-detection-home.component.html',
+  selector: 'app-custom-gestures',
+  templateUrl: './custom-gestures.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class GestureDetectionHomeComponent implements AfterViewInit {
+export class CustomGesturesComponent implements AfterViewInit {
   @ViewChild('videoElement')
   public videoElement?: ElementRef<HTMLVideoElement>;
   @ViewChild('outputCanvas')
@@ -68,7 +68,7 @@ export class GestureDetectionHomeComponent implements AfterViewInit {
     canvas.width = video.videoWidth;
     canvas.height = video.videoHeight;
 
-    const startTimeMs = performance.now();
+    const startTimeMs = Date.now();
     if (this.lastVideoTime !== video.currentTime) {
       this.lastVideoTime = video.currentTime;
       this.results = this.gestureRecognizer.recognizeForVideo(
@@ -114,8 +114,7 @@ export class GestureDetectionHomeComponent implements AfterViewInit {
     );
     this.gestureRecognizer = await GestureRecognizer.createFromOptions(vision, {
       baseOptions: {
-        modelAssetPath:
-          'https://storage.googleapis.com/mediapipe-models/gesture_recognizer/gesture_recognizer/float16/1/gesture_recognizer.task',
+        modelAssetPath: 'assets/ml-models/custom_gesture_recognizer.task',
         delegate: 'GPU',
       },
       runningMode: 'VIDEO',

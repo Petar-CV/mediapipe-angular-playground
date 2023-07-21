@@ -1,6 +1,6 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { GestureDetectiondCustomComponent } from './gesture-detection-custom.component';
+import { GestureDetectiondCustomComponent } from './custom-gestures.component';
 
 describe('GestureDetectiondCustomComponent', () => {
   let component: GestureDetectiondCustomComponent;

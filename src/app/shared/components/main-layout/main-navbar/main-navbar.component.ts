@@ -23,30 +23,19 @@ export class MainNavbarComponent implements OnInit {
   private loadNavbar(): void {
     this.navbarItems = [
       {
-        label: 'Home',
-        icon: 'pi pi-fw pi-home',
-        routerLink: ['/'],
-        routerLinkActiveOptions: { exact: true },
+        label: 'Stock gestures',
+        icon: 'pi pi-fw pi-play',
+        routerLink: ['/media-pipe-implementations/stock-gestures'],
       },
       {
-        label: 'Original hands',
+        label: 'Custom gestures',
         icon: 'pi pi-fw pi-play',
-        routerLink: ['/gesture-detection/home'],
+        routerLink: ['/media-pipe-implementations/custom-gestures'],
       },
       {
-        label: 'Hands',
+        label: 'Selfie segmentation',
         icon: 'pi pi-fw pi-play',
-        routerLink: ['/gesture-detection/implementation'],
-      },
-      {
-        label: 'Custom',
-        icon: 'pi pi-fw pi-play',
-        routerLink: ['/gesture-detection/custom'],
-      },
-      {
-        label: 'Segmentation',
-        icon: 'pi pi-fw pi-play',
-        routerLink: ['/gesture-detection/segmentation'],
+        routerLink: ['/media-pipe-implementations/selfie-segmentation'],
       },
     ];
 

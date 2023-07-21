@@ -10,20 +10,20 @@ const routes: Routes = [
     data: { pageTitle: 'Home' },
     children: [
       {
-        path: 'gesture-detection',
+        path: 'media-pipe-implementations',
         loadChildren: () =>
-          import('./modules/gesture-detection/gesture-detection.module').then(
-            (m) => m.GestureDetectionModule
-          ),
+          import(
+            './modules/media-pipe-implementations/media-pipe-implementations.module'
+          ).then((m) => m.MediaPipeImplementationsModule),
       },
       {
         path: '',
-        redirectTo: 'gesture-detection',
+        redirectTo: 'media-pipe-implementations',
         pathMatch: 'full',
       },
       {
         path: '**',
-        redirectTo: 'gesture-detection',
+        redirectTo: 'media-pipe-implementations',
         pathMatch: 'full',
       },
     ],
