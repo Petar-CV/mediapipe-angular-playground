@@ -10,6 +10,7 @@ import { SelfieSegmentationAndHandDetectionComponent } from './modules/selfie-se
 import { StockGesturesComponent } from './modules/stock-gestures/stock-gestures.component';
 import { StockHandDetectionComponent } from './modules/stock-hand-detection/stock-hand-detection.component';
 import { HandLandmarkerService } from './services/hand-landmarker/hand-landmarker.service';
+import { ImageSegmenterService } from './services/image-segmenter/image-segmenter.service';
 
 const routes: Routes = [
   {
@@ -51,7 +52,7 @@ const routes: Routes = [
 ];
 
 @NgModule({
-  providers: [HandLandmarkerService],
+  providers: [HandLandmarkerService, ImageSegmenterService],
   declarations: [
     MediaPipeImplementationsOutletComponent,
     StockGesturesComponent,
