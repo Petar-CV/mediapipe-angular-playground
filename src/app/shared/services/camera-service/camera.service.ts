@@ -39,8 +39,8 @@ export class CameraService {
   ): void {
     // Remove existing stream and listeners
     if (videoElement.srcObject) {
+      videoElement.onloadeddata = null;
       videoElement.srcObject = null;
-      videoElement.removeEventListener('loadeddata', onDataLoaded);
     }
 
     navigator.mediaDevices
@@ -51,8 +51,10 @@ export class CameraService {
         audio: false,
       })
       .then((stream) => {
+        videoElement.onloadeddata = () => {
+          onDataLoaded();
+        };
         videoElement.srcObject = stream;
-        videoElement.addEventListener('loadeddata', onDataLoaded);
       })
       .catch((error) => {
         console.error(error);
