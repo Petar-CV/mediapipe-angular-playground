@@ -3,12 +3,12 @@ import { RouterModule, Routes } from '@angular/router';
 
 import { SharedModule } from 'src/app/shared/modules/shared.module';
 
-import { CustomGesturesComponent } from './custom-gestures/custom-gestures.component';
 import { MediaPipeImplementationsOutletComponent } from './media-pipe-implementations-outlet.component';
-import { SelfieSegmentationComponent } from './selfie-segmentation/selfie-segmentation.component';
-import { SelfieSegmentationAndHandDetectionComponent } from './selfie-segmentation-and-hand-detection/selfie-segmentation-and-hand-detection.component';
-import { StockGesturesComponent } from './stock-gestures/stock-gestures.component';
-import { StockHandDetectionComponent } from './stock-hand-detection/stock-hand-detection.component';
+import { CustomGesturesComponent } from './modules/custom-gestures/custom-gestures.component';
+import { SelfieSegmentationComponent } from './modules/selfie-segmentation/selfie-segmentation.component';
+import { SelfieSegmentationAndHandDetectionComponent } from './modules/selfie-segmentation-and-hand-detection/selfie-segmentation-and-hand-detection.component';
+import { StockGesturesComponent } from './modules/stock-gestures/stock-gestures.component';
+import { StockHandDetectionComponent } from './modules/stock-hand-detection/stock-hand-detection.component';
 
 const routes: Routes = [
   {
