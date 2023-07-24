@@ -1,10 +1,8 @@
 import {
   AfterViewInit,
   ChangeDetectionStrategy,
-  ChangeDetectorRef,
   Component,
   ElementRef,
-  OnInit,
   ViewChild,
 } from '@angular/core';
 import { drawConnectors, drawLandmarks } from '@mediapipe/drawing_utils';
@@ -15,6 +13,8 @@ import {
   ImageSegmenter,
   ImageSegmenterResult,
 } from '@mediapipe/tasks-vision';
+
+import { CameraService } from 'src/app/shared/services/camera-service/camera.service';
 
 const legendColors = [
   [255, 197, 0, 255], // Vivid Yellow
@@ -46,7 +46,7 @@ const legendColors = [
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class SelfieSegmentationAndHandDetectionComponent
-  implements OnInit, AfterViewInit
+  implements AfterViewInit
 {
   @ViewChild('webcamVideo')
   public webcamVideo!: ElementRef<HTMLVideoElement>;
@@ -54,7 +54,7 @@ export class SelfieSegmentationAndHandDetectionComponent
   @ViewChild('outputCanvas')
   public outputCanvas!: ElementRef<HTMLCanvasElement>;
 
-  public cameras: MediaDeviceInfo[] = [];
+  public cameras$ = this.cameraService.getCameras$();
   public selectedCamera?: MediaDeviceInfo;
 
   private imageSegmenter?: ImageSegmenter;
@@ -66,20 +66,23 @@ export class SelfieSegmentationAndHandDetectionComponent
     this.predictWebcam(this.selectedCamera?.deviceId);
   };
 
-  constructor(private cdr: ChangeDetectorRef) {}
-
-  public ngOnInit(): void {
-    this.getListOfCameras();
-  }
+  constructor(private cameraService: CameraService) {}
 
   public ngAfterViewInit(): void {
     this.setupImageSegmenter();
     this.setupHandLandmarker();
-    this.enableCamera();
+    this.cameraService.enableCameraForVideoElement(
+      this.webcamVideo.nativeElement,
+      this.onDataLoaded
+    );
   }
 
   public onSelectedCameraChange(): void {
-    this.enableCamera();
+    this.cameraService.setSelectedCamera(this.selectedCamera);
+    this.cameraService.enableCameraForVideoElement(
+      this.webcamVideo.nativeElement,
+      this.onDataLoaded
+    );
   }
 
   private async setupImageSegmenter() {
@@ -121,8 +124,8 @@ export class SelfieSegmentationAndHandDetectionComponent
 
   private async predictWebcam(currentCameraId?: string) {
     const videoElement: HTMLVideoElement = this.webcamVideo.nativeElement;
-    const selectedCameraId = this.selectedCamera?.deviceId;
     const canvasElement: HTMLCanvasElement = this.outputCanvas.nativeElement;
+    const selectedCameraId = this.selectedCamera?.deviceId;
 
     if (selectedCameraId !== currentCameraId) {
       return;
@@ -231,45 +234,5 @@ export class SelfieSegmentationAndHandDetectionComponent
     this.canvasCtx.putImageData(dataNew, 0, 0);
 
     requestAnimationFrame(() => this.predictWebcam(currentCameraId));
-  }
-
-  private getListOfCameras(): void {
-    this.cameras = [];
-
-    navigator.mediaDevices.enumerateDevices().then((devices) => {
-      devices.forEach((device) => {
-        if (device.kind === 'videoinput') {
-          this.cameras.push(device);
-        }
-      });
-
-      this.selectedCamera = this.cameras[0];
-      this.cdr.detectChanges();
-    });
-  }
-
-  private enableCamera(): void {
-    const videoElement: HTMLVideoElement = this.webcamVideo.nativeElement;
-
-    // Remove existing stream and listeners
-    if (videoElement.srcObject) {
-      videoElement.srcObject = null;
-      videoElement.removeEventListener('loadeddata', this.onDataLoaded);
-    }
-
-    navigator.mediaDevices
-      .getUserMedia({
-        video: {
-          deviceId: this.selectedCamera?.deviceId,
-        },
-        audio: false,
-      })
-      .then((stream) => {
-        videoElement.srcObject = stream;
-        videoElement.addEventListener('loadeddata', this.onDataLoaded);
-      })
-      .catch((error) => {
-        console.error(error);
-      });
   }
 }

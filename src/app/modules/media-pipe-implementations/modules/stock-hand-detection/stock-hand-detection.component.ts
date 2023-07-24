@@ -1,10 +1,8 @@
 import {
   AfterViewInit,
   ChangeDetectionStrategy,
-  ChangeDetectorRef,
   Component,
   ElementRef,
-  OnInit,
   ViewChild,
 } from '@angular/core';
 import { drawConnectors, drawLandmarks } from '@mediapipe/drawing_utils';
@@ -14,19 +12,21 @@ import {
   HandLandmarkerResult,
 } from '@mediapipe/tasks-vision';
 
+import { CameraService } from 'src/app/shared/services/camera-service/camera.service';
+
 @Component({
   selector: 'app-stock-hand-detection',
   templateUrl: './stock-hand-detection.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class StockHandDetectionComponent implements OnInit, AfterViewInit {
+export class StockHandDetectionComponent implements AfterViewInit {
   @ViewChild('webcamVideo')
   public webcamVideo!: ElementRef<HTMLVideoElement>;
 
   @ViewChild('outputCanvas')
   public outputCanvas!: ElementRef<HTMLCanvasElement>;
 
-  public cameras: MediaDeviceInfo[] = [];
+  public cameras$ = this.cameraService.getCameras$();
   public selectedCamera?: MediaDeviceInfo;
 
   private handLandmarker?: HandLandmarker;
@@ -37,19 +37,22 @@ export class StockHandDetectionComponent implements OnInit, AfterViewInit {
     this.predictWebcam(this.selectedCamera?.deviceId);
   };
 
-  constructor(private cdr: ChangeDetectorRef) {}
-
-  public ngOnInit(): void {
-    this.getListOfCameras();
-  }
+  constructor(private cameraService: CameraService) {}
 
   public ngAfterViewInit(): void {
     this.setupHandLandmarker();
-    this.enableCamera();
+    this.cameraService.enableCameraForVideoElement(
+      this.webcamVideo.nativeElement,
+      this.onDataLoaded
+    );
   }
 
   public onSelectedCameraChange(): void {
-    this.enableCamera();
+    this.cameraService.setSelectedCamera(this.selectedCamera);
+    this.cameraService.enableCameraForVideoElement(
+      this.webcamVideo.nativeElement,
+      this.onDataLoaded
+    );
   }
 
   private async setupHandLandmarker() {
@@ -122,45 +125,5 @@ export class StockHandDetectionComponent implements OnInit, AfterViewInit {
     this.canvasCtx.restore();
 
     requestAnimationFrame(() => this.predictWebcam(currentCameraId));
-  }
-
-  private getListOfCameras(): void {
-    this.cameras = [];
-
-    navigator.mediaDevices.enumerateDevices().then((devices) => {
-      devices.forEach((device) => {
-        if (device.kind === 'videoinput') {
-          this.cameras.push(device);
-        }
-      });
-
-      this.selectedCamera = this.cameras[0];
-      this.cdr.detectChanges();
-    });
-  }
-
-  private enableCamera(): void {
-    const videoElement: HTMLVideoElement = this.webcamVideo.nativeElement;
-
-    // Remove existing stream and listeners
-    if (videoElement.srcObject) {
-      videoElement.srcObject = null;
-      videoElement.removeEventListener('loadeddata', this.onDataLoaded);
-    }
-
-    navigator.mediaDevices
-      .getUserMedia({
-        video: {
-          deviceId: this.selectedCamera?.deviceId,
-        },
-        audio: false,
-      })
-      .then((stream) => {
-        videoElement.srcObject = stream;
-        videoElement.addEventListener('loadeddata', this.onDataLoaded);
-      })
-      .catch((error) => {
-        console.error(error);
-      });
   }
 }

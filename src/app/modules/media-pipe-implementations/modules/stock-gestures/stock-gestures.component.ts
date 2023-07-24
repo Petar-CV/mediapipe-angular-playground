@@ -13,72 +13,88 @@ import {
   GestureRecognizer,
 } from '@mediapipe/tasks-vision';
 
+import { CameraService } from 'src/app/shared/services/camera-service/camera.service';
+
 @Component({
   selector: 'app-stock-gestures',
   templateUrl: './stock-gestures.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class StockGesturesComponent implements AfterViewInit {
-  @ViewChild('videoElement')
-  public videoElement?: ElementRef<HTMLVideoElement>;
+  @ViewChild('webcamVideo')
+  public webcamVideo!: ElementRef<HTMLVideoElement>;
+
   @ViewChild('outputCanvas')
-  public outputCanvas?: ElementRef<HTMLCanvasElement>;
+  public outputCanvas!: ElementRef<HTMLCanvasElement>;
+
   public gestureDetected = '';
   public showLandmarks = false;
+  public cameras$ = this.cameraService.getCameras$();
+  public selectedCamera?: MediaDeviceInfo;
 
   private gestureRecognizer?: GestureRecognizer;
   private lastVideoTime = -1;
   private results?: GestureRecognizerResult;
+  private onDataLoaded = () => {
+    this.predictWebcam(this.selectedCamera?.deviceId);
+  };
 
-  public constructor(private cdr: ChangeDetectorRef) {}
+  public constructor(
+    private cdr: ChangeDetectorRef,
+    private cameraService: CameraService
+  ) {}
 
-  public async ngAfterViewInit(): Promise<void> {
-    await this.createGestureRecognizer();
-    this.enableCamera();
+  public ngAfterViewInit(): void {
+    this.createGestureRecognizer();
+    this.cameraService.enableCameraForVideoElement(
+      this.webcamVideo.nativeElement,
+      this.onDataLoaded
+    );
   }
 
-  private enableCamera(): void {
-    const videoElement = this.videoElement?.nativeElement;
-    if (videoElement) {
-      navigator.mediaDevices
-        .getUserMedia({ video: true })
-        .then((stream) => {
-          videoElement.srcObject = stream;
-          videoElement.addEventListener('loadeddata', () =>
-            this.predictWebcam()
-          );
-        })
-        .catch((error) => {
-          console.error(error);
-        });
-    }
+  public onSelectedCameraChange(): void {
+    this.cameraService.setSelectedCamera(this.selectedCamera);
+    this.cameraService.enableCameraForVideoElement(
+      this.webcamVideo.nativeElement,
+      this.onDataLoaded
+    );
   }
 
-  private async predictWebcam(): Promise<void> {
-    const video = this.videoElement?.nativeElement;
-    const canvas = this.outputCanvas?.nativeElement;
-    const canvasCtx = canvas?.getContext('2d');
+  private async predictWebcam(currentCameraId?: string): Promise<void> {
+    const videoElement = this.webcamVideo?.nativeElement;
+    const canvasElement = this.outputCanvas?.nativeElement;
+    const canvasCtx = canvasElement?.getContext('2d');
+    const selectedCameraId = this.selectedCamera?.deviceId;
 
-    if (!video || !canvas || !canvasCtx || !this.gestureRecognizer) {
+    if (selectedCameraId !== currentCameraId) {
       return;
     }
 
-    canvas.style.width = video.videoWidth.toString();
-    canvas.style.height = video.videoHeight.toString();
-    canvas.width = video.videoWidth;
-    canvas.height = video.videoHeight;
+    if (
+      !videoElement ||
+      !canvasElement ||
+      !canvasCtx ||
+      !this.gestureRecognizer
+    ) {
+      return;
+    }
+
+    canvasElement.style.width = videoElement.videoWidth.toString();
+    canvasElement.style.height = videoElement.videoHeight.toString();
+    canvasElement.width = videoElement.videoWidth;
+    canvasElement.height = videoElement.videoHeight;
 
     const startTimeMs = performance.now();
-    if (this.lastVideoTime !== video.currentTime) {
-      this.lastVideoTime = video.currentTime;
+    if (this.lastVideoTime !== videoElement.currentTime) {
+      this.lastVideoTime = videoElement.currentTime;
       this.results = this.gestureRecognizer.recognizeForVideo(
-        video,
+        videoElement,
         startTimeMs
       );
     }
 
     canvasCtx.save();
-    canvasCtx.clearRect(0, 0, canvas.width, canvas.height);
+    canvasCtx.clearRect(0, 0, canvasElement.width, canvasElement.height);
     if (this.results?.landmarks && this.showLandmarks) {
       for (const landmarks of this.results.landmarks) {
         drawConnectors(
@@ -105,7 +121,7 @@ export class StockGesturesComponent implements AfterViewInit {
 
     this.cdr.detectChanges();
 
-    requestAnimationFrame(() => this.predictWebcam());
+    requestAnimationFrame(() => this.predictWebcam(currentCameraId));
   }
 
   private async createGestureRecognizer(): Promise<void> {

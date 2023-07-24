@@ -1,13 +1,19 @@
 <div style="position: relative;">
-  <video #videoElement id="videoElement" autoplay playsinline></video>
-  <canvas #outputCanvas class="output_canvas" id="output_canvas" style="position: absolute; left: 0px; top: 0px;"></canvas>
+  <video #webcamVideo autoplay playsinline></video>
+  <canvas #outputCanvas style="position: absolute; left: 0px; top: 0px;"></canvas>
 </div>
 
 <div class="p-2 space-y-2">
   <span>{{ gestureDetected }}</span>
 
-  <div class="flex items-center space-x-2">
-    <p-checkbox [(ngModel)]="showLandmarks" [binary]="true" inputId="showLandmarks"></p-checkbox>
-    <label for="showLandmarks">Show hand landmarks?</label>
+  <div class="flex flex-col space-y-2">
+    <div *ngIf="cameras$ | async as cameras">
+      <p-dropdown [options]="cameras" [(ngModel)]="selectedCamera" (onChange)="onSelectedCameraChange()" optionLabel="label"></p-dropdown>
+    </div>
+
+    <div class="flex flex-row space-x-2">
+      <p-checkbox [(ngModel)]="showLandmarks" [binary]="true" inputId="showLandmarks"></p-checkbox>
+      <label for="showLandmarks">Show hand landmarks?</label>
+    </div>
   </div>
 </div>

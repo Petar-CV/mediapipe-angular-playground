@@ -13,51 +13,62 @@ import {
   GestureRecognizer,
 } from '@mediapipe/tasks-vision';
 
+import { CameraService } from 'src/app/shared/services/camera-service/camera.service';
+
 @Component({
   selector: 'app-custom-gestures',
   templateUrl: './custom-gestures.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class CustomGesturesComponent implements AfterViewInit {
-  @ViewChild('videoElement')
-  public videoElement?: ElementRef<HTMLVideoElement>;
+  @ViewChild('webcamVideo')
+  public webcamVideo!: ElementRef<HTMLVideoElement>;
+
   @ViewChild('outputCanvas')
-  public outputCanvas?: ElementRef<HTMLCanvasElement>;
+  public outputCanvas!: ElementRef<HTMLCanvasElement>;
+
   public gestureDetected = '';
   public showLandmarks = false;
+  public cameras$ = this.cameraService.getCameras$();
+  public selectedCamera?: MediaDeviceInfo;
 
   private gestureRecognizer?: GestureRecognizer;
   private lastVideoTime = -1;
   private results?: GestureRecognizerResult;
+  private onDataLoaded = () => {
+    this.predictWebcam(this.selectedCamera?.deviceId);
+  };
 
-  public constructor(private cdr: ChangeDetectorRef) {}
+  public constructor(
+    private cdr: ChangeDetectorRef,
+    private cameraService: CameraService
+  ) {}
 
-  public async ngAfterViewInit(): Promise<void> {
-    await this.createGestureRecognizer();
-    this.enableCamera();
+  public ngAfterViewInit(): void {
+    this.createGestureRecognizer();
+    this.cameraService.enableCameraForVideoElement(
+      this.webcamVideo.nativeElement,
+      this.onDataLoaded
+    );
   }
 
-  private enableCamera(): void {
-    const videoElement = this.videoElement?.nativeElement;
-    if (videoElement) {
-      navigator.mediaDevices
-        .getUserMedia({ video: true })
-        .then((stream) => {
-          videoElement.srcObject = stream;
-          videoElement.addEventListener('loadeddata', () =>
-            this.predictWebcam()
-          );
-        })
-        .catch((error) => {
-          console.error(error);
-        });
-    }
+  public onSelectedCameraChange(): void {
+    this.cameraService.setSelectedCamera(this.selectedCamera);
+    this.cameraService.enableCameraForVideoElement(
+      this.webcamVideo.nativeElement,
+      this.onDataLoaded
+    );
   }
 
-  private async predictWebcam(): Promise<void> {
-    const video = this.videoElement?.nativeElement;
+  private async predictWebcam(currentCameraId?: string): Promise<void> {
+    const video = this.webcamVideo?.nativeElement;
     const canvas = this.outputCanvas?.nativeElement;
     const canvasCtx = canvas?.getContext('2d');
+    const selectedCameraId = this.selectedCamera?.deviceId;
+
+    if (selectedCameraId !== currentCameraId) {
+      return;
+    }
 
     if (!video || !canvas || !canvasCtx || !this.gestureRecognizer) {
       return;
@@ -105,7 +116,7 @@ export class CustomGesturesComponent implements AfterViewInit {
 
     this.cdr.detectChanges();
 
-    requestAnimationFrame(() => this.predictWebcam());
+    requestAnimationFrame(() => this.predictWebcam(currentCameraId));
   }
 
   private async createGestureRecognizer(): Promise<void> {
