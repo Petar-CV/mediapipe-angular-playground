@@ -5,14 +5,10 @@ import {
   ElementRef,
   ViewChild,
 } from '@angular/core';
-import { drawConnectors, drawLandmarks } from '@mediapipe/drawing_utils';
-import {
-  FilesetResolver,
-  HandLandmarker,
-  HandLandmarkerResult,
-} from '@mediapipe/tasks-vision';
 
 import { CameraService } from 'src/app/shared/services/camera-service/camera.service';
+
+import { HandLandmarkerService } from '../../services/hand-landmarker/hand-landmarker.service';
 
 @Component({
   selector: 'app-stock-hand-detection',
@@ -29,22 +25,26 @@ export class StockHandDetectionComponent implements AfterViewInit {
   public cameras$ = this.cameraService.getCameras$();
   public selectedCamera?: MediaDeviceInfo;
 
-  private handLandmarker?: HandLandmarker;
-  private results?: HandLandmarkerResult;
-  private canvasCtx?: CanvasRenderingContext2D | null;
-  private lastWebcamTime = 0;
   private onDataLoaded = () => {
     this.predictWebcam(this.selectedCamera?.deviceId);
   };
 
-  constructor(private cameraService: CameraService) {}
+  constructor(
+    private cameraService: CameraService,
+    private handLandmarkerService: HandLandmarkerService
+  ) {}
 
   public ngAfterViewInit(): void {
-    this.setupHandLandmarker();
-    this.cameraService.enableCameraForVideoElement(
-      this.webcamVideo.nativeElement,
-      this.onDataLoaded
-    );
+    const videoElement = this.webcamVideo.nativeElement;
+    const canvasElement = this.outputCanvas.nativeElement;
+
+    this.cameraService.enableCameraForVideoElement(videoElement, () => {
+      this.onDataLoaded(),
+        this.handLandmarkerService.initializeElements(
+          videoElement,
+          canvasElement
+        );
+    });
   }
 
   public onSelectedCameraChange(): void {
@@ -55,74 +55,22 @@ export class StockHandDetectionComponent implements AfterViewInit {
     );
   }
 
-  private async setupHandLandmarker() {
-    const vision = await FilesetResolver.forVisionTasks(
-      'https://cdn.jsdelivr.net/npm/@mediapipe/tasks-vision@0.10.2/wasm'
-    );
-
-    this.handLandmarker = await HandLandmarker.createFromOptions(vision, {
-      baseOptions: {
-        modelAssetPath:
-          'https://storage.googleapis.com/mediapipe-models/hand_landmarker/hand_landmarker/float16/1/hand_landmarker.task',
-        delegate: 'GPU',
-      },
-      runningMode: 'VIDEO',
-      numHands: 1,
-    });
-
-    this.canvasCtx = this.outputCanvas.nativeElement.getContext('2d');
-  }
-
-  private async predictWebcam(currentCameraId?: string) {
-    const videoElement: HTMLVideoElement = this.webcamVideo.nativeElement;
-    const canvasElement: HTMLCanvasElement = this.outputCanvas.nativeElement;
+  private async predictWebcam(currentCameraId?: string): Promise<void> {
+    const videoElement = this.webcamVideo.nativeElement;
+    const canvasElement = this.outputCanvas.nativeElement;
+    const canvasCtx = canvasElement.getContext('2d');
     const selectedCameraId = this.selectedCamera?.deviceId;
 
+    // If the camera has changed, stop predicting previous camera data
     if (selectedCameraId !== currentCameraId) {
       return;
     }
 
-    if (!this.handLandmarker || !this.canvasCtx || !videoElement) {
-      return;
-    }
-
-    canvasElement.style.width = `${videoElement.videoWidth}px`;
-    canvasElement.style.height = `${videoElement.videoHeight}px`;
-    canvasElement.width = videoElement.videoWidth;
-    canvasElement.height = videoElement.videoHeight;
-
-    const startTimeMs = performance.now();
-    if (this.lastWebcamTime !== videoElement.currentTime) {
-      this.lastWebcamTime = videoElement.currentTime;
-      this.results = this.handLandmarker.detectForVideo(
-        videoElement,
-        startTimeMs
-      );
-    }
-
-    this.canvasCtx.save();
-    this.canvasCtx.clearRect(0, 0, canvasElement.width, canvasElement.height);
-    if (this.results?.landmarks) {
-      for (const landmarks of this.results.landmarks) {
-        drawConnectors(
-          this.canvasCtx,
-          landmarks,
-          HandLandmarker.HAND_CONNECTIONS.map((connection) => [
-            connection.start,
-            connection.end,
-          ]),
-          {
-            color: '#00FF00',
-            lineWidth: 5,
-          }
-        );
-        drawLandmarks(this.canvasCtx, landmarks, {
-          color: '#FF0000',
-          lineWidth: 2,
-        });
-      }
-    }
-    this.canvasCtx.restore();
+    this.handLandmarkerService.predictWebcam(
+      videoElement,
+      canvasElement,
+      canvasCtx
+    );
 
     requestAnimationFrame(() => this.predictWebcam(currentCameraId));
   }

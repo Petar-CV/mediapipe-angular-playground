@@ -1,6 +1,6 @@
 <div style="position: relative;">
   <video #webcamVideo autoplay playsinline></video>
-  <canvas #outputCanvas height="640" width="480" style="position: absolute; left: 0px; top: 0px;"></canvas>
+  <canvas #outputCanvas style="position: absolute; left: 0px; top: 0px;"></canvas>
 </div>
 
 <div class="p-2 space-y-2" *ngIf="cameras$ | async as cameras">
