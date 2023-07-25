@@ -44,7 +44,7 @@ const routes: Routes = [
       },
       {
         path: '',
-        redirectTo: 'stock-gestures',
+        redirectTo: 'selfie-segmentation',
         pathMatch: 'full',
       },
     ],
