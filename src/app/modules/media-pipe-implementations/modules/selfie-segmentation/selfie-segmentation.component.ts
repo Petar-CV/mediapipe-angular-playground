@@ -1,11 +1,14 @@
 import {
   AfterViewInit,
   ChangeDetectionStrategy,
+  ChangeDetectorRef,
   Component,
   ElementRef,
   OnDestroy,
+  OnInit,
   ViewChild,
 } from '@angular/core';
+import { Subscription } from 'rxjs';
 
 import { CameraService } from 'src/app/shared/services/camera-service/camera.service';
 
@@ -16,7 +19,9 @@ import { ImageSegmenterService } from '../../services/image-segmenter/image-segm
   templateUrl: './selfie-segmentation.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class SelfieSegmentationComponent implements AfterViewInit, OnDestroy {
+export class SelfieSegmentationComponent
+  implements OnInit, AfterViewInit, OnDestroy
+{
   @ViewChild('webcamVideo')
   public webcamVideo!: ElementRef<HTMLVideoElement>;
 
@@ -26,15 +31,26 @@ export class SelfieSegmentationComponent implements AfterViewInit, OnDestroy {
   public cameras$ = this.cameraService.getCameras$();
   public selectedCamera?: MediaDeviceInfo;
 
+  private subscriptions: Subscription[] = [];
   private animationFrameId?: number;
   private onDataLoaded = () => {
     this.predictWebcam(this.selectedCamera?.deviceId);
   };
 
   constructor(
+    private cdr: ChangeDetectorRef,
     private cameraService: CameraService,
     private imageSegmenterService: ImageSegmenterService
   ) {}
+
+  public ngOnInit(): void {
+    this.subscriptions.push(
+      this.cameraService.getSelectedCamera$().subscribe((camera) => {
+        this.selectedCamera = camera;
+        this.cdr.detectChanges();
+      })
+    );
+  }
 
   public ngAfterViewInit(): void {
     const videoElement = this.webcamVideo.nativeElement;
@@ -59,9 +75,12 @@ export class SelfieSegmentationComponent implements AfterViewInit, OnDestroy {
 
   public ngOnDestroy(): void {
     this.imageSegmenterService.dispose();
+
     if (this.animationFrameId) {
       cancelAnimationFrame(this.animationFrameId);
     }
+
+    this.subscriptions.forEach((subscription) => subscription.unsubscribe());
   }
 
   private async predictWebcam(currentCameraId?: string): Promise<void> {

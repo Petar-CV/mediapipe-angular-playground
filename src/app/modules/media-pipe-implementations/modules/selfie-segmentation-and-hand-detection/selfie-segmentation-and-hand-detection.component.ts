@@ -1,6 +1,7 @@
 import {
   AfterViewInit,
   ChangeDetectionStrategy,
+  ChangeDetectorRef,
   Component,
   ElementRef,
   OnDestroy,
@@ -14,6 +15,7 @@ import {
   ImageSegmenter,
   ImageSegmenterResult,
 } from '@mediapipe/tasks-vision';
+import { Subscription } from 'rxjs';
 
 import { CameraService } from 'src/app/shared/services/camera-service/camera.service';
 
@@ -58,6 +60,7 @@ export class SelfieSegmentationAndHandDetectionComponent
   public cameras$ = this.cameraService.getCameras$();
   public selectedCamera?: MediaDeviceInfo;
 
+  private subscriptions: Subscription[] = [];
   private imageSegmenter?: ImageSegmenter;
   private handLandmarker?: HandLandmarker;
   private results?: HandLandmarkerResult;
@@ -67,7 +70,17 @@ export class SelfieSegmentationAndHandDetectionComponent
     this.predictWebcam(this.selectedCamera?.deviceId);
   };
 
-  constructor(private cameraService: CameraService) {}
+  constructor(
+    private cdr: ChangeDetectorRef,
+    private cameraService: CameraService
+  ) {
+    this.subscriptions.push(
+      this.cameraService.getSelectedCamera$().subscribe((camera) => {
+        this.selectedCamera = camera;
+        this.cdr.detectChanges();
+      })
+    );
+  }
 
   public ngAfterViewInit(): void {
     this.setupImageSegmenter();
@@ -90,6 +103,8 @@ export class SelfieSegmentationAndHandDetectionComponent
     if (this.animationFrameId) {
       cancelAnimationFrame(this.animationFrameId);
     }
+
+    this.subscriptions.forEach((subscription) => subscription.unsubscribe());
   }
 
   private async setupImageSegmenter() {

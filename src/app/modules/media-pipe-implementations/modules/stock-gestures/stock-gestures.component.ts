@@ -13,6 +13,7 @@ import {
   GestureRecognizerResult,
   GestureRecognizer,
 } from '@mediapipe/tasks-vision';
+import { Subscription } from 'rxjs';
 
 import { CameraService } from 'src/app/shared/services/camera-service/camera.service';
 
@@ -33,6 +34,7 @@ export class StockGesturesComponent implements AfterViewInit, OnDestroy {
   public cameras$ = this.cameraService.getCameras$();
   public selectedCamera?: MediaDeviceInfo;
 
+  private subscriptions: Subscription[] = [];
   private gestureRecognizer?: GestureRecognizer;
   private lastVideoTime = -1;
   private results?: GestureRecognizerResult;
@@ -44,7 +46,14 @@ export class StockGesturesComponent implements AfterViewInit, OnDestroy {
   public constructor(
     private cdr: ChangeDetectorRef,
     private cameraService: CameraService
-  ) {}
+  ) {
+    this.subscriptions.push(
+      this.cameraService.getSelectedCamera$().subscribe((camera) => {
+        this.selectedCamera = camera;
+        this.cdr.detectChanges();
+      })
+    );
+  }
 
   public ngAfterViewInit(): void {
     this.createGestureRecognizer();
@@ -66,6 +75,8 @@ export class StockGesturesComponent implements AfterViewInit, OnDestroy {
     if (this.animationFrameId) {
       cancelAnimationFrame(this.animationFrameId);
     }
+
+    this.subscriptions.forEach((subscription) => subscription.unsubscribe());
   }
 
   private async predictWebcam(currentCameraId?: string): Promise<void> {
