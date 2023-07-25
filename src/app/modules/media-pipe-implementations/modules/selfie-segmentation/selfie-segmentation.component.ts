@@ -25,7 +25,6 @@ export class SelfieSegmentationComponent implements AfterViewInit {
   public cameras$ = this.cameraService.getCameras$();
   public selectedCamera?: MediaDeviceInfo;
 
-  private canvasCtx?: CanvasRenderingContext2D | null;
   private onDataLoaded = () => {
     this.predictWebcam(this.selectedCamera?.deviceId);
   };
