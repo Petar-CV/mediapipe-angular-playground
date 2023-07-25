@@ -37,7 +37,8 @@ export class AppComponent implements OnInit, OnDestroy {
   }
 
   private getPageTitle(routeSnapshot: ActivatedRouteSnapshot): string {
-    let title: string = routeSnapshot.data['pageTitle'] ?? 'MediaPipe Playground';
+    let title: string =
+      routeSnapshot.data['pageTitle'] ?? 'MediaPipe Playground';
     if (routeSnapshot.firstChild) {
       title = this.getPageTitle(routeSnapshot.firstChild) || title;
     }

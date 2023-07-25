@@ -1,6 +1,9 @@
-<div style="position: relative;">
+<div style="position: relative">
   <video #webcamVideo autoplay playsinline></video>
-  <canvas #outputCanvas style="position: absolute; left: 0px; top: 0px;"></canvas>
+  <canvas
+    #outputCanvas
+    style="position: absolute; left: 0px; top: 0px"
+  ></canvas>
 </div>
 
 <div class="p-2 space-y-2">
@@ -8,11 +11,21 @@
 
   <div class="flex flex-col space-y-2">
     <div *ngIf="cameras$ | async as cameras">
-      <p-dropdown [options]="cameras" [(ngModel)]="selectedCamera" (onChange)="onSelectedCameraChange()" dataKey="deviceId" optionLabel="label"></p-dropdown>
+      <p-dropdown
+        [options]="cameras"
+        [(ngModel)]="selectedCamera"
+        (onChange)="onSelectedCameraChange()"
+        dataKey="deviceId"
+        optionLabel="label"
+      ></p-dropdown>
     </div>
 
     <div class="flex flex-row space-x-2">
-      <p-checkbox [(ngModel)]="showLandmarks" [binary]="true" inputId="showLandmarks"></p-checkbox>
+      <p-checkbox
+        [(ngModel)]="showLandmarks"
+        [binary]="true"
+        inputId="showLandmarks"
+      ></p-checkbox>
       <label for="showLandmarks">Show hand landmarks?</label>
     </div>
   </div>
