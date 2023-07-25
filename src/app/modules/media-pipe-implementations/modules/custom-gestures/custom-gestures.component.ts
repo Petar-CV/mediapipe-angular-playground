@@ -4,6 +4,7 @@ import {
   ChangeDetectorRef,
   Component,
   ElementRef,
+  OnDestroy,
   ViewChild,
 } from '@angular/core';
 import { drawConnectors, drawLandmarks } from '@mediapipe/drawing_utils';
@@ -20,7 +21,7 @@ import { CameraService } from 'src/app/shared/services/camera-service/camera.ser
   templateUrl: './custom-gestures.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class CustomGesturesComponent implements AfterViewInit {
+export class CustomGesturesComponent implements AfterViewInit, OnDestroy {
   @ViewChild('webcamVideo')
   public webcamVideo!: ElementRef<HTMLVideoElement>;
 
@@ -32,6 +33,7 @@ export class CustomGesturesComponent implements AfterViewInit {
   public cameras$ = this.cameraService.getCameras$();
   public selectedCamera?: MediaDeviceInfo;
 
+  private animationFrameId?: number;
   private gestureRecognizer?: GestureRecognizer;
   private lastVideoTime = -1;
   private results?: GestureRecognizerResult;
@@ -58,6 +60,12 @@ export class CustomGesturesComponent implements AfterViewInit {
       this.webcamVideo.nativeElement,
       this.onDataLoaded
     );
+  }
+
+  public ngOnDestroy(): void {
+    if (this.animationFrameId) {
+      cancelAnimationFrame(this.animationFrameId);
+    }
   }
 
   private async predictWebcam(currentCameraId?: string): Promise<void> {
@@ -116,7 +124,9 @@ export class CustomGesturesComponent implements AfterViewInit {
 
     this.cdr.detectChanges();
 
-    requestAnimationFrame(() => this.predictWebcam(currentCameraId));
+    this.animationFrameId = requestAnimationFrame(() =>
+      this.predictWebcam(currentCameraId)
+    );
   }
 
   private async createGestureRecognizer(): Promise<void> {

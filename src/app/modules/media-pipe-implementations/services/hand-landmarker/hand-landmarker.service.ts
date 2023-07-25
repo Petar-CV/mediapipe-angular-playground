@@ -11,10 +11,6 @@ export class HandLandmarkerService {
   private handLandmarker?: HandLandmarker;
   private results?: HandLandmarkerResult;
 
-  constructor() {
-    this.initialize();
-  }
-
   public loadCustomModel(modelAssetPath: string): void {
     this.handLandmarker?.applyOptions({
       baseOptions: {
@@ -27,6 +23,7 @@ export class HandLandmarkerService {
     videoElement: HTMLVideoElement,
     canvasElement: HTMLCanvasElement
   ): void {
+    this.initialize();
     canvasElement.style.width = `${videoElement.clientWidth}px`;
     canvasElement.style.height = `${videoElement.clientHeight}px`;
     canvasElement.width = videoElement.clientWidth;
@@ -43,7 +40,7 @@ export class HandLandmarkerService {
       performance.now()
     );
 
-    if (!this.results || !canvasCtx) {
+    if (!this.results || !canvasCtx || !this.handLandmarker) {
       return;
     }
 
@@ -70,6 +67,10 @@ export class HandLandmarkerService {
       }
     }
     canvasCtx.restore();
+  }
+
+  public dispose(): void {
+    this.handLandmarker = undefined;
   }
 
   private initialize(): void {

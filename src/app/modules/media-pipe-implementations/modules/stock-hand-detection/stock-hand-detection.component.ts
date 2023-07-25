@@ -3,6 +3,7 @@ import {
   ChangeDetectionStrategy,
   Component,
   ElementRef,
+  OnDestroy,
   ViewChild,
 } from '@angular/core';
 
@@ -15,7 +16,7 @@ import { HandLandmarkerService } from '../../services/hand-landmarker/hand-landm
   templateUrl: './stock-hand-detection.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class StockHandDetectionComponent implements AfterViewInit {
+export class StockHandDetectionComponent implements AfterViewInit, OnDestroy {
   @ViewChild('webcamVideo')
   public webcamVideo!: ElementRef<HTMLVideoElement>;
 
@@ -25,6 +26,7 @@ export class StockHandDetectionComponent implements AfterViewInit {
   public cameras$ = this.cameraService.getCameras$();
   public selectedCamera?: MediaDeviceInfo;
 
+  private animationFrameId?: number;
   private onDataLoaded = () => {
     this.predictWebcam(this.selectedCamera?.deviceId);
   };
@@ -55,6 +57,14 @@ export class StockHandDetectionComponent implements AfterViewInit {
     );
   }
 
+  public ngOnDestroy(): void {
+    this.handLandmarkerService.dispose();
+
+    if (this.animationFrameId) {
+      cancelAnimationFrame(this.animationFrameId);
+    }
+  }
+
   private async predictWebcam(currentCameraId?: string): Promise<void> {
     const videoElement = this.webcamVideo.nativeElement;
     const canvasElement = this.outputCanvas.nativeElement;
@@ -72,6 +82,8 @@ export class StockHandDetectionComponent implements AfterViewInit {
       canvasCtx
     );
 
-    requestAnimationFrame(() => this.predictWebcam(currentCameraId));
+    this.animationFrameId = requestAnimationFrame(() =>
+      this.predictWebcam(currentCameraId)
+    );
   }
 }

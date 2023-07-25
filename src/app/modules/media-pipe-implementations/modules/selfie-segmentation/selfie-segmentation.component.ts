@@ -3,6 +3,7 @@ import {
   ChangeDetectionStrategy,
   Component,
   ElementRef,
+  OnDestroy,
   ViewChild,
 } from '@angular/core';
 
@@ -15,7 +16,7 @@ import { ImageSegmenterService } from '../../services/image-segmenter/image-segm
   templateUrl: './selfie-segmentation.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class SelfieSegmentationComponent implements AfterViewInit {
+export class SelfieSegmentationComponent implements AfterViewInit, OnDestroy {
   @ViewChild('webcamVideo')
   public webcamVideo!: ElementRef<HTMLVideoElement>;
 
@@ -25,6 +26,7 @@ export class SelfieSegmentationComponent implements AfterViewInit {
   public cameras$ = this.cameraService.getCameras$();
   public selectedCamera?: MediaDeviceInfo;
 
+  private animationFrameId?: number;
   private onDataLoaded = () => {
     this.predictWebcam(this.selectedCamera?.deviceId);
   };
@@ -55,6 +57,13 @@ export class SelfieSegmentationComponent implements AfterViewInit {
     );
   }
 
+  public ngOnDestroy(): void {
+    this.imageSegmenterService.dispose();
+    if (this.animationFrameId) {
+      cancelAnimationFrame(this.animationFrameId);
+    }
+  }
+
   private async predictWebcam(currentCameraId?: string): Promise<void> {
     const canvasElement = this.outputCanvas.nativeElement;
     const canvasCtx = canvasElement.getContext('2d');
@@ -67,6 +76,8 @@ export class SelfieSegmentationComponent implements AfterViewInit {
 
     this.imageSegmenterService.predictWebcam(videoElement, canvasCtx);
 
-    requestAnimationFrame(() => this.predictWebcam(currentCameraId));
+    this.animationFrameId = requestAnimationFrame(() =>
+      this.predictWebcam(currentCameraId)
+    );
   }
 }

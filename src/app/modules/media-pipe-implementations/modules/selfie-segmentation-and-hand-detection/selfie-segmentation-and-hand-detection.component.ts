@@ -3,6 +3,7 @@ import {
   ChangeDetectionStrategy,
   Component,
   ElementRef,
+  OnDestroy,
   ViewChild,
 } from '@angular/core';
 import { drawConnectors, drawLandmarks } from '@mediapipe/drawing_utils';
@@ -46,7 +47,7 @@ const legendColors = [
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class SelfieSegmentationAndHandDetectionComponent
-  implements AfterViewInit
+  implements AfterViewInit, OnDestroy
 {
   @ViewChild('webcamVideo')
   public webcamVideo!: ElementRef<HTMLVideoElement>;
@@ -61,7 +62,7 @@ export class SelfieSegmentationAndHandDetectionComponent
   private handLandmarker?: HandLandmarker;
   private results?: HandLandmarkerResult;
   private canvasCtx?: CanvasRenderingContext2D | null;
-  private lastWebcamTime = 0;
+  private animationFrameId?: number;
   private onDataLoaded = () => {
     this.predictWebcam(this.selectedCamera?.deviceId);
   };
@@ -83,6 +84,12 @@ export class SelfieSegmentationAndHandDetectionComponent
       this.webcamVideo.nativeElement,
       this.onDataLoaded
     );
+  }
+
+  public ngOnDestroy(): void {
+    if (this.animationFrameId) {
+      cancelAnimationFrame(this.animationFrameId);
+    }
   }
 
   private async setupImageSegmenter() {
@@ -139,13 +146,6 @@ export class SelfieSegmentationAndHandDetectionComponent
     ) {
       return;
     }
-
-    if (videoElement.currentTime === this.lastWebcamTime) {
-      requestAnimationFrame(() => this.predictWebcam(currentCameraId));
-      return;
-    }
-
-    this.lastWebcamTime = videoElement.currentTime;
 
     canvasElement.style.width = `${videoElement.videoWidth}px`;
     canvasElement.style.height = `${videoElement.videoHeight}px`;
@@ -233,6 +233,8 @@ export class SelfieSegmentationAndHandDetectionComponent
     );
     this.canvasCtx.putImageData(dataNew, 0, 0);
 
-    requestAnimationFrame(() => this.predictWebcam(currentCameraId));
+    this.animationFrameId = requestAnimationFrame(() =>
+      this.predictWebcam(currentCameraId)
+    );
   }
 }

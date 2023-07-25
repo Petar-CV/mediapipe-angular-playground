@@ -32,10 +32,6 @@ export class ImageSegmenterService {
     [0, 161, 194, 255], // Vivid Blue
   ];
 
-  constructor() {
-    this.initialize();
-  }
-
   public loadCustomModel(modelAssetPath: string): void {
     this.imageSegmenter?.applyOptions({
       baseOptions: {
@@ -48,6 +44,7 @@ export class ImageSegmenterService {
     videoElement: HTMLVideoElement,
     canvasElement: HTMLCanvasElement
   ): void {
+    this.initialize();
     canvasElement.style.width = `${videoElement.clientWidth}px`;
     canvasElement.style.height = `${videoElement.clientHeight}px`;
     canvasElement.width = videoElement.clientWidth;
@@ -115,6 +112,10 @@ export class ImageSegmenterService {
       videoElement.videoHeight
     );
     canvasCtx.putImageData(dataNew, 0, 0);
+  }
+
+  public dispose(): void {
+    this.imageSegmenter = undefined;
   }
 
   private initialize(): void {
