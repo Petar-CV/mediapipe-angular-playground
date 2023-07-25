@@ -59,6 +59,7 @@ export class SelfieSegmentationAndHandDetectionComponent
 
   public cameras$ = this.cameraService.getCameras$();
   public selectedCamera?: MediaDeviceInfo;
+  public mirrorWebcam = true;
 
   private subscriptions: Subscription[] = [];
   private imageSegmenter?: ImageSegmenter;

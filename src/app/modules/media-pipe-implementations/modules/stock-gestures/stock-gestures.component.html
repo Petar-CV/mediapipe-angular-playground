@@ -1,8 +1,14 @@
 <div style="position: relative">
-  <video #webcamVideo autoplay playsinline></video>
+  <video
+    #webcamVideo
+    autoplay
+    playsinline
+    [style.transform]="mirrorWebcam ? 'scaleX(-1)' : 'scaleX(1)'"
+  ></video>
   <canvas
     #outputCanvas
     style="position: absolute; left: 0px; top: 0px"
+    [style.transform]="mirrorWebcam ? 'scaleX(-1)' : 'scaleX(1)'"
   ></canvas>
 </div>
 
@@ -21,12 +27,21 @@
     </div>
 
     <div class="flex flex-row space-x-2">
-      <p-checkbox
+      <p-inputSwitch
         [(ngModel)]="showLandmarks"
-        [binary]="true"
         inputId="showLandmarks"
-      ></p-checkbox>
+        name="showLandmarks"
+      ></p-inputSwitch>
       <label for="showLandmarks">Show hand landmarks?</label>
+    </div>
+
+    <div class="flex space-x-2">
+      <p-inputSwitch
+        name="mirrorWebcam"
+        inputId="mirrorWebcam"
+        [(ngModel)]="mirrorWebcam"
+      ></p-inputSwitch>
+      <label for="mirrorWebcam">Mirror webcam?</label>
     </div>
   </div>
 </div>

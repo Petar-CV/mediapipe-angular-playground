@@ -1,15 +1,21 @@
 <div style="position: relative">
-  <video #webcamVideo autoplay playsinline></video>
+  <video
+    #webcamVideo
+    autoplay
+    playsinline
+    [style.transform]="mirrorWebcam ? 'scaleX(-1)' : 'scaleX(1)'"
+  ></video>
   <canvas
     #outputCanvas
     height="640"
     width="480"
     style="position: absolute; left: 0px; top: 0px"
+    [style.transform]="mirrorWebcam ? 'scaleX(-1)' : 'scaleX(1)'"
   ></canvas>
 </div>
 
 <div class="p-2 space-y-2" *ngIf="cameras$ | async as cameras">
-  <div class="flex items-center space-x-2">
+  <div>
     <p-dropdown
       [options]="cameras"
       [(ngModel)]="selectedCamera"
@@ -17,5 +23,14 @@
       dataKey="deviceId"
       optionLabel="label"
     ></p-dropdown>
+  </div>
+
+  <div class="flex space-x-2">
+    <p-inputSwitch
+      name="mirrorWebcam"
+      inputId="mirrorWebcam"
+      [(ngModel)]="mirrorWebcam"
+    ></p-inputSwitch>
+    <label for="mirrorWebcam">Mirror webcam?</label>
   </div>
 </div>

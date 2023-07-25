@@ -33,6 +33,7 @@ export class CustomGesturesComponent implements AfterViewInit, OnDestroy {
   public showLandmarks = false;
   public cameras$ = this.cameraService.getCameras$();
   public selectedCamera?: MediaDeviceInfo;
+  public mirrorWebcam = true;
 
   private subscriptions: Subscription[] = [];
   private animationFrameId?: number;

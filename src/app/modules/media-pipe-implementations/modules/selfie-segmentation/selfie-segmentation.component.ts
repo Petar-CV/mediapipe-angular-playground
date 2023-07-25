@@ -30,6 +30,7 @@ export class SelfieSegmentationComponent
 
   public cameras$ = this.cameraService.getCameras$();
   public selectedCamera?: MediaDeviceInfo;
+  public mirrorWebcam = true;
 
   private subscriptions: Subscription[] = [];
   private animationFrameId?: number;
