@@ -1,7 +1,7 @@
 FROM node:16-alpine AS builder
 
-RUN mkdir -p /usr/src/app/totem-angular
-WORKDIR /usr/src/app/totem-angular
+RUN mkdir -p /usr/src/app/mediapipe-angular-playground
+WORKDIR /usr/src/app/mediapipe-angular-playground
 
 # RUN apk --update add git
 
@@ -18,7 +18,7 @@ FROM nginx:alpine
 
 WORKDIR /usr/share/nginx/html
 
-COPY --from=builder /usr/src/app/totem-angular/dist/totem-angular .
+COPY --from=builder /usr/src/app/mediapipe-angular-playground/dist/mediapipe-angular-playground .
 
 COPY ./nginx.conf /etc/nginx/nginx.conf
 

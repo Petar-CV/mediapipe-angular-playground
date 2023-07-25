@@ -3,7 +3,7 @@
   "version": 1,
   "newProjectRoot": "projects",
   "projects": {
-    "totem-angular": {
+    "mediapipe-angular-playground": {
       "projectType": "application",
       "schematics": {
         "@schematics/angular:component": {
@@ -17,7 +17,7 @@
         "build": {
           "builder": "@angular-devkit/build-angular:browser",
           "options": {
-            "outputPath": "dist/totem-angular",
+            "outputPath": "dist/mediapipe-angular-playground",
             "index": "src/index.html",
             "main": "src/main.ts",
             "polyfills": ["zone.js"],
@@ -64,10 +64,10 @@
           "builder": "@angular-devkit/build-angular:dev-server",
           "configurations": {
             "production": {
-              "browserTarget": "totem-angular:build:production"
+              "browserTarget": "mediapipe-angular-playground:build:production"
             },
             "development": {
-              "browserTarget": "totem-angular:build:development"
+              "browserTarget": "mediapipe-angular-playground:build:development"
             }
           },
           "defaultConfiguration": "development"
@@ -75,7 +75,7 @@
         "extract-i18n": {
           "builder": "@angular-devkit/build-angular:extract-i18n",
           "options": {
-            "browserTarget": "totem-angular:build"
+            "browserTarget": "mediapipe-angular-playground:build"
           }
         },
         "test": {

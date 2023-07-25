@@ -1,6 +1,6 @@
 {
-  "name": "totem-angular",
-  "short_name": "totem-angular",
+  "name": "mediapipe-angular-playground",
+  "short_name": "mediapipe-angular-playground",
   "theme_color": "#1976d2",
   "background_color": "#fafafa",
   "display": "standalone",

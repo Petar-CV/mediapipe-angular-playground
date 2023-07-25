@@ -9,17 +9,17 @@ pipeline {
         }
         stage("Build container") {
             steps {
-                sh "docker build -t totem-angular:${env.GIT_COMMIT} ."
+                sh "docker build -t mediapipe-angular-playground:${env.GIT_COMMIT} ."
             }
         }
         stage("Remove old container") {
             steps {
-                sh "docker rm -f totem-angular"
+                sh "docker rm -f mediapipe-angular-playground"
             }
         }
         stage("Run container") {
             steps {
-                sh "docker run -d --name totem-angular -p 4200:80 totem-angular:${env.GIT_COMMIT}"
+                sh "docker run -d --name mediapipe-angular-playground -p 4200:80 mediapipe-angular-playground:${env.GIT_COMMIT}"
             }
         }
     }
