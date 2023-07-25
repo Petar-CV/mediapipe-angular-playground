@@ -5,6 +5,7 @@ import {
   Component,
   ElementRef,
   OnDestroy,
+  OnInit,
   ViewChild,
 } from '@angular/core';
 import { drawConnectors, drawLandmarks } from '@mediapipe/drawing_utils';
@@ -49,7 +50,7 @@ const legendColors = [
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class SelfieSegmentationAndHandDetectionComponent
-  implements AfterViewInit, OnDestroy
+  implements OnInit, AfterViewInit, OnDestroy
 {
   @ViewChild('webcamVideo')
   public webcamVideo!: ElementRef<HTMLVideoElement>;
@@ -74,7 +75,9 @@ export class SelfieSegmentationAndHandDetectionComponent
   constructor(
     private cdr: ChangeDetectorRef,
     private cameraService: CameraService
-  ) {
+  ) {}
+
+  public ngOnInit(): void {
     this.subscriptions.push(
       this.cameraService.getSelectedCamera$().subscribe((camera) => {
         this.selectedCamera = camera;

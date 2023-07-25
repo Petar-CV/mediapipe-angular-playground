@@ -5,6 +5,7 @@ import {
   Component,
   ElementRef,
   OnDestroy,
+  OnInit,
   ViewChild,
 } from '@angular/core';
 import { drawConnectors, drawLandmarks } from '@mediapipe/drawing_utils';
@@ -22,7 +23,9 @@ import { CameraService } from 'src/app/shared/services/camera-service/camera.ser
   templateUrl: './custom-gestures.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class CustomGesturesComponent implements AfterViewInit, OnDestroy {
+export class CustomGesturesComponent
+  implements OnInit, AfterViewInit, OnDestroy
+{
   @ViewChild('webcamVideo')
   public webcamVideo!: ElementRef<HTMLVideoElement>;
 
@@ -47,7 +50,9 @@ export class CustomGesturesComponent implements AfterViewInit, OnDestroy {
   public constructor(
     private cdr: ChangeDetectorRef,
     private cameraService: CameraService
-  ) {
+  ) {}
+
+  public ngOnInit(): void {
     this.subscriptions.push(
       this.cameraService.getSelectedCamera$().subscribe((camera) => {
         this.selectedCamera = camera;
