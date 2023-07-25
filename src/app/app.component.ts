@@ -31,13 +31,13 @@ export class AppComponent implements OnInit, OnDestroy {
   private updateTitle(): void {
     let pageTitle = this.getPageTitle(this.router.routerState.snapshot.root);
     if (!pageTitle) {
-      pageTitle = 'Totem Angular';
+      pageTitle = 'MediaPipe Playground';
     }
     this.titleService.setTitle(pageTitle);
   }
 
   private getPageTitle(routeSnapshot: ActivatedRouteSnapshot): string {
-    let title: string = routeSnapshot.data['pageTitle'] ?? 'Totem Angular';
+    let title: string = routeSnapshot.data['pageTitle'] ?? 'MediaPipe Playground';
     if (routeSnapshot.firstChild) {
       title = this.getPageTitle(routeSnapshot.firstChild) || title;
     }
