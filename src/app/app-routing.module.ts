@@ -17,13 +17,20 @@ const routes: Routes = [
           ).then((m) => m.MediaPipeImplementationsModule),
       },
       {
+        path: 'custom-models',
+        loadChildren: () =>
+          import('./modules/custom-models/custom-models.module').then(
+            (m) => m.CustomModelsModule
+          ),
+      },
+      {
         path: '',
-        redirectTo: 'media-pipe-implementations',
+        redirectTo: 'custom-models',
         pathMatch: 'full',
       },
       {
         path: '**',
-        redirectTo: 'media-pipe-implementations',
+        redirectTo: 'custom-models',
         pathMatch: 'full',
       },
     ],

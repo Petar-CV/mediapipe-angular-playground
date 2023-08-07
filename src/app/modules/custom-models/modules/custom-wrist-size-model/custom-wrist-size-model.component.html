@@ -1,0 +1,122 @@
+<style>
+  .processing_canvas {
+    transform: scale(2.5) translateX(30%) translateY(30%);
+  }
+
+  .flip {
+    transform: scaleX(-1);
+  }
+</style>
+<div style="position: relative">
+  <video
+    #videoElement
+    id="videoElement"
+    autoplay
+    playsinline
+    class="flip"
+    [style.transform]="mirrorWebcam ? 'scaleX(-1)' : 'scaleX(1)'"
+  ></video>
+  <canvas
+    #processingCanvas
+    id="processingCanvas"
+    class="processing_canvas flip"
+    style="position: absolute; left: 0px; top: 0px"
+    width="256"
+    height="192"
+    [style.transform]="mirrorWebcam ? 'scaleX(-1)' : 'scaleX(1)'"
+  ></canvas>
+  <canvas
+    #outputCanvas
+    class="output_canvas"
+    id="output_canvas"
+    class="flip"
+    style="position: absolute; left: 0px; top: 0px"
+    [style.transform]="mirrorWebcam ? 'scaleX(-1)' : 'scaleX(1)'"
+  ></canvas>
+</div>
+
+<div class="p-2 space-y-2" *ngIf="cameras$ | async as cameras">
+  <div>
+    <p-dropdown
+      [options]="cameras"
+      [(ngModel)]="selectedCamera"
+      (onChange)="onSelectedCameraChange()"
+      dataKey="deviceId"
+      optionLabel="label"
+    ></p-dropdown>
+  </div>
+
+  <div class="flex space-x-2">
+    <p-inputSwitch
+      name="mirrorWebcam"
+      inputId="mirrorWebcam"
+      [(ngModel)]="mirrorWebcam"
+    ></p-inputSwitch>
+    <label for="mirrorWebcam">Mirror webcam?</label>
+  </div>
+
+  <div class="flex space-x-2">
+    <p-inputSwitch
+      [(ngModel)]="posterize"
+      name="posterize"
+      inputId="posterize"
+    ></p-inputSwitch>
+    <label for="posterize">Posterize?</label>
+  </div>
+
+  <div class="flex space-x-2">
+    <p-inputSwitch
+      [(ngModel)]="medianBlur"
+      name="medianBlur"
+      inputId="medianBlur"
+    ></p-inputSwitch>
+    <label for="medianBlur">Median blur?</label>
+  </div>
+
+  <div class="flex space-x-2">
+    <p-inputSwitch
+      [(ngModel)]="skinFilter"
+      name="skinFilter"
+      inputId="skinFilter"
+    ></p-inputSwitch>
+    <label for="skinFilter">Skin filter?</label>
+  </div>
+
+  <div class="flex space-x-2">
+    <p-inputSwitch
+      [(ngModel)]="gaussianMixture"
+      name="gaussianMixture"
+      inputId="gaussianMixture"
+    ></p-inputSwitch>
+    <label for="gaussianMixture">GaussMix?</label>
+  </div>
+
+  <div class="flex space-x-2">
+    <p-inputSwitch
+      [(ngModel)]="skinGrayscale"
+      name="skinGrayscale"
+      inputId="skinGrayscale"
+    ></p-inputSwitch>
+    <label for="skinGrayscale">Skin grayscale?</label>
+  </div>
+
+  <div class="flex space-x-2">
+    <p-inputSwitch
+      [(ngModel)]="edgeDetect"
+      name="edgeDetect"
+      inputId="edgeDetect"
+    ></p-inputSwitch>
+    <label for="edgeDetect">Edge detect?</label>
+  </div>
+
+  <!--
+      <button type="button" pButton (click)="eval()" label="Eval">Eval</button>
+      <input type="range" min="1000" max="20000"  [(ngModel)]="valA" />
+      <input type="range" min="0" max="255"  [(ngModel)]="valB" />
+      <input type="range" min="0" max="255"  [(ngModel)]="valC" />
+      <input type="range" min="0" max="255"  [(ngModel)]="valD" />
+      -->
+</div>
+
+<!-- Image upload for testing -->
+<input type="file" (change)="imageUploaded($event)" />

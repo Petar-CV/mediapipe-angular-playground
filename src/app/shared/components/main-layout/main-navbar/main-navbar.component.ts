@@ -23,30 +23,47 @@ export class MainNavbarComponent implements OnInit {
   private loadNavbar(): void {
     this.navbarItems = [
       {
-        label: 'Stock gestures',
+        label: 'MediaPipe',
         icon: 'pi pi-fw pi-play',
-        routerLink: ['/media-pipe-implementations/stock-gestures'],
+        items: [
+          {
+            label: 'Stock gestures',
+            icon: 'pi pi-fw pi-play',
+            routerLink: ['/media-pipe-implementations/stock-gestures'],
+          },
+          {
+            label: 'Custom gestures',
+            icon: 'pi pi-fw pi-play',
+            routerLink: ['/media-pipe-implementations/custom-gestures'],
+          },
+          {
+            label: 'Selfie segmentation',
+            icon: 'pi pi-fw pi-play',
+            routerLink: ['/media-pipe-implementations/selfie-segmentation'],
+          },
+          {
+            label: 'Stock hand detection',
+            icon: 'pi pi-fw pi-play',
+            routerLink: ['/media-pipe-implementations/stock-hand-detection'],
+          },
+          {
+            label: 'Selfie segmentation and hand detection',
+            icon: 'pi pi-fw pi-play',
+            routerLink: [
+              '/media-pipe-implementations/selfie-segmentation-and-hand-detection',
+            ],
+          },
+        ],
       },
       {
-        label: 'Custom gestures',
+        label: 'Custom models',
         icon: 'pi pi-fw pi-play',
-        routerLink: ['/media-pipe-implementations/custom-gestures'],
-      },
-      {
-        label: 'Selfie segmentation',
-        icon: 'pi pi-fw pi-play',
-        routerLink: ['/media-pipe-implementations/selfie-segmentation'],
-      },
-      {
-        label: 'Stock hand detection',
-        icon: 'pi pi-fw pi-play',
-        routerLink: ['/media-pipe-implementations/stock-hand-detection'],
-      },
-      {
-        label: 'Selfie segmentation and hand detection',
-        icon: 'pi pi-fw pi-play',
-        routerLink: [
-          '/media-pipe-implementations/selfie-segmentation-and-hand-detection',
+        items: [
+          {
+            label: 'Custom wrist size',
+            icon: 'pi pi-fw pi-play',
+            routerLink: ['/custom-models/custom-wrist-size'],
+          },
         ],
       },
     ];
